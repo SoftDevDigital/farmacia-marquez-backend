@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",                    // Good for Node.js/NestJS
+    "declaration": true,                     // Useful for generating .d.ts files
+    "removeComments": true,                  // Good for production builds
+    "emitDecoratorMetadata": true,           // Required for class-validator/TypeORM
+    "experimentalDecorators": true,          // Required for class-validator/TypeORM
+    "allowSyntheticDefaultImports": true,    // Good for compatibility with some imports
+    "target": "ES2021",                      // Modern target, good choice
+    "sourceMap": true,                       // Useful for debugging
+    "outDir": "./dist",                      // Standard NestJS output directory
+    "baseUrl": "./",                         // Good for relative imports
+    "incremental": true,                     // Improves build performance
+    "skipLibCheck": true,                    // Speeds up compilation, good for most cases
+    "strictNullChecks": true,                // Good for type safety
+    "forceConsistentCasingInFileNames": true, // Prevents case-sensitivity issues
+    "noImplicitAny": false,                  // Current setting allows flexibility
+    "strictBindCallApply": false,            // Current setting allows flexibility
+    "noFallthroughCasesInSwitch": false,     // Current setting allows flexibility
+
+    // Recommended additions for NestJS/TypeScript
+    "esModuleInterop": true,                 // Better module interoperability
+    "strict": true,                          // Enables all strict type checking options
+    "strictPropertyInitialization": false,   // Useful with dependency injection
+    "moduleResolution": "node",              // Matches Node.js module resolution
+    "resolveJsonModule": true,               // Allows importing JSON files
+    "types": ["node"],                       // Ensures Node.js types are available
+    "lib": ["ES2021"]                        // Matches target with appropriate libs
+  },
+  // Optional: Include/exclude patterns
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist"]
+}

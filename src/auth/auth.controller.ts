@@ -206,8 +206,8 @@ export class AuthController {
             <script>
               window.opener.postMessage({
                 accessToken: '${accessToken}',
-                redirectUrl: 'http://localhost:3001/'
-              }, 'http://localhost:3001');
+                redirectUrl: 'http://localhost:3003/'
+              }, 'http://localhost:3003');
               window.close();
             </script>
           </body>

@@ -220,7 +220,7 @@ export class PaymentsController {
       }
 
       if (paymentStatus.status !== 'approved') {
-        return res.redirect('http://localhost:3001/payment-failure');
+        return res.redirect('http://localhost:3003/payment-failure');
       }
 
       let userId: string | undefined;
@@ -248,27 +248,27 @@ export class PaymentsController {
 
       if (!userId) {
         return res.redirect(
-          'http://localhost:3001/payment-failure?error=user_not_found',
+          'http://localhost:3003/payment-failure?error=user_not_found',
         );
       }
 
       const user = await this.userModel.findById(userId).exec();
       if (!user) {
         return res.redirect(
-          'http://localhost:3001/payment-failure?error=user_not_found',
+          'http://localhost:3003/payment-failure?error=user_not_found',
         );
       }
 
       const cart = await this.cartService.findOne(user._id);
       if (!cart) {
         return res.redirect(
-          'http://localhost:3001/payment-failure?error=cart_not_found',
+          'http://localhost:3003/payment-failure?error=cart_not_found',
         );
       }
 
       if (!cart.items || cart.items.length === 0) {
         return res.redirect(
-          'http://localhost:3001/payment-failure?error=empty_cart',
+          'http://localhost:3003/payment-failure?error=empty_cart',
         );
       }
 
@@ -308,7 +308,7 @@ export class PaymentsController {
 
       await this.cartService.clearCart(user._id, productIds);
 
-      return res.redirect('http://localhost:3001/orders');
+      return res.redirect('http://localhost:3003/orders');
     } catch (error: unknown) {
       if (
         error instanceof BadRequestException ||
@@ -320,7 +320,7 @@ export class PaymentsController {
           error.stack,
         );
         return res.redirect(
-          `http://localhost:3001/payment-failure?error=${error.message}`,
+          `http://localhost:3003/payment-failure?error=${error.message}`,
         );
       }
       this.logger.error(
@@ -328,7 +328,7 @@ export class PaymentsController {
         error instanceof Error ? error.stack : undefined,
       );
       return res.redirect(
-        'http://localhost:3001/payment-failure?error=server_error',
+        'http://localhost:3003/payment-failure?error=server_error',
       );
     }
   }
@@ -340,7 +340,7 @@ export class PaymentsController {
   @ApiResponse({ status: 302, description: 'Redirige al frontend' })
   async failure(@Query('status') status: string, @Response() res: any) {
     this.logger.warn('Pago cancelado o fallido', { status });
-    return res.redirect('http://localhost:3001/');
+    return res.redirect('http://localhost:3003/');
   }
 
   @Get('pending')

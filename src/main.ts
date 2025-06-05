@@ -23,12 +23,12 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document); // Documentación disponible en /api
   app.enableCors({
-    origin: 'http://localhost:3001', // Permite solo este origen
+    origin: 'http://localhost:3003', // Permite solo este origen
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
     optionsSuccessStatus: 204,
   });
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
-  await app.listen(3000);
+  await app.listen(3002);
 }
 bootstrap();

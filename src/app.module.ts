@@ -18,11 +18,12 @@ import { AffiliatesModule } from './affiliates/affiliates.module'; // Añadido
 @Module({
   imports: [
     MongooseModule.forRoot(
-      process.env.MONGODB_URI || 'mongodb://localhost:27017/nestjs',
+      process.env.MONGODB_URI || 'mongodb://localhost:27017/farmacia-marquez',
     ),
     ConfigModule.forRoot({
       isGlobal: true,
-      envFilePath: '.env',
+      envFilePath:
+        process.env.NODE_ENV === 'production' ? '.env' : '.env.development',
     }),
     AuthModule,
     UsersModule,

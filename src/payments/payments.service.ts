@@ -101,9 +101,9 @@ export class PaymentsService {
           email: userEmail,
         },
         back_urls: {
-          success: 'http://localhost:3000/payment/success',
-          failure: 'http://localhost:3000/payment/failure',
-          pending: 'http://localhost:3000/payment/pending',
+          success: `${process.env.BACKEND_URL}/payment/success`,
+          failure: `${process.env.BACKEND_URL}/payment/failure`,
+          pending: `${process.env.BACKEND_URL}/payment/pending`,
         },
         auto_return: 'approved',
         external_reference: orderId, // Usamos el orderId como referencia para identificar el pago

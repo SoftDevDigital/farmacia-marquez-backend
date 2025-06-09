@@ -92,9 +92,9 @@ export class MercadoPagoService {
         quantity: item.quantity,
       })),
       back_urls: {
-        success: 'http://localhost:3000/payments/success',
-        failure: 'http://localhost:3000/payments/failure',
-        pending: 'http://localhost:3000/payments/pending',
+        success: `${process.env.BACKEND_URL}/payments/success`,
+        failure: `${process.env.BACKEND_URL}/payments/failure`,
+        pending: `${process.env.BACKEND_URL}/payments/pending`,
       },
       // Eliminamos auto_return para evitar el error
       external_reference: externalReference,

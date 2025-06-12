@@ -96,7 +96,7 @@ export class MercadoPagoService {
         failure: `${process.env.BACKEND_URL}/payments/failure`,
         pending: `${process.env.BACKEND_URL}/payments/pending`,
       },
-      auto_return: 'approved',
+      // Eliminamos auto_return para evitar el error
       external_reference: externalReference,
       transaction_amount: cartTotal,
     };

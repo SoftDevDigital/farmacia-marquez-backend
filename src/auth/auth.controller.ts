@@ -206,8 +206,8 @@ export class AuthController {
             <script>
               window.opener.postMessage({
                 accessToken: '${accessToken}',
-                redirectUrl: process.env.FRONTEND_URL
-              }, process.env.FRONTEND_URL);
+                redirectUrl: 'https://farmaciamarquezcity.com/'
+              }, 'https://farmaciamarquezcity.com/');
               window.close();
             </script>
           </body>

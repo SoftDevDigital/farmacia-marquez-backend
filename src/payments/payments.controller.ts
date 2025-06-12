@@ -220,9 +220,7 @@ export class PaymentsController {
       }
 
       if (paymentStatus.status !== 'approved') {
-        return res.redirect(
-          `${process.env.FRONTEND_URL}/payment-failure`,
-        );
+        return res.redirect(`${process.env.FRONTEND_URL}/payment-failure`);
       }
 
       let userId: string | undefined;
@@ -310,9 +308,7 @@ export class PaymentsController {
 
       await this.cartService.clearCart(user._id, productIds);
 
-      return res.redirect(
-        `${process.env.FRONTEND_URL}/orders`,
-      );
+      return res.redirect(`${process.env.FRONTEND_URL}/orders`);
     } catch (error: unknown) {
       if (
         error instanceof BadRequestException ||
@@ -344,9 +340,7 @@ export class PaymentsController {
   @ApiResponse({ status: 302, description: 'Redirige al frontend' })
   async failure(@Query('status') status: string, @Response() res: any) {
     this.logger.warn('Pago cancelado o fallido', { status });
-    return res.redirect(
-      `${process.env.FRONTEND_URL}/`,
-    );
+    return res.redirect(`${process.env.FRONTEND_URL}/`);
   }
 
   @Get('pending')

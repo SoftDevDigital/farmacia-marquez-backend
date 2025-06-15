@@ -230,7 +230,9 @@ export class ProductsController {
             `No se encontraron productos con promociones del tipo ${filter.promotionType}`,
           );
         }
-        return filteredProducts;
+
+        // si la propiedad type en los objetos del array de filteredProducts es null, eliminarla
+        return filteredProducts.filter((product) => product.type !== null);
       }
 
       return productsWithPromotions;

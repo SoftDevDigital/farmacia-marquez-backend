@@ -690,4 +690,28 @@ export class PromotionsService {
   getPromotionTypes(): string[] {
     return Object.values(PromotionType);
   }
+
+  async findByType(
+    type: PromotionType | 'ALL',
+    isActive,
+  ): Promise<Promotion[]> {
+    if (type !== 'ALL' && !Object.values(PromotionType).includes(type)) {
+      throw new BadRequestException(
+        `El tipo de promoción debe ser uno de: ${Object.values(PromotionType).join(', ')} o 'ALL'`,
+      );
+    }
+
+    const query: { isActive: boolean; type?: PromotionType } = { isActive };
+
+    if (type !== 'ALL') query.type = type as PromotionType;
+
+    try {
+      const response = await this.promotionModel.find(query).exec();
+      return response;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Error al buscar promociones por tipo',
+      );
+    }
+  }
 }

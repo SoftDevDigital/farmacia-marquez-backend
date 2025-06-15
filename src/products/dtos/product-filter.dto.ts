@@ -33,6 +33,25 @@ export class ProductFilterDto {
   brandId?: string;
 
   @ApiProperty({
+    description: 'ID de la Promosión',
+    required: false,
+    format: 'uuid',
+    example: '550e8400-e29b-41d4-a716-446655440003',
+  })
+  @IsUUID()
+  @IsOptional()
+  promotionId?: string;
+
+  @ApiProperty({
+    description: 'Tipo del promoción',
+    required: false,
+    format: 'string',
+    example: 'NXN, PORCENTAGE, FIXED',
+  })
+  @IsOptional()
+  promotionType?: string;
+
+  @ApiProperty({
     description: 'Búsqueda por nombre',
     required: false,
     example: 'Paracetamol',

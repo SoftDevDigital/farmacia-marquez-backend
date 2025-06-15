@@ -205,9 +205,9 @@ export class AuthController {
           <body>
             <script>
               window.opener.postMessage({
-                accessToken: '${accessToken}',
-                redirectUrl: 'https://farmaciamarquezcity.com/'
-              }, 'https://farmaciamarquezcity.com/');
+                accessToken: "${accessToken}",
+                redirectUrl: "https://farmaciamarquezcity.com"
+              }, "https://farmaciamarquezcity.com");
               window.close();
             </script>
           </body>

@@ -32,6 +32,7 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { Roles } from '../common/decorators/roles.decorator';
 import { Role } from '../common/enums/role.enum';
 import { Promotion } from '../promotions/schemas/promotions.schema';
+import { PromotionType } from '../promotions/enums/promotion-type.enum';
 
 @ApiTags('Products')
 @Controller('products')
@@ -161,6 +162,76 @@ export class ProductsController {
           }
         }),
       );
+
+      if (filter.promotionId) {
+        this.validateId(filter.promotionId, 'promotionId');
+
+        // Filtrar productos por promoción
+        const filteredProducts = productsWithPromotions.filter(
+          (product) =>
+            product.appliedPromotion === filter.promotionId ||
+            (product.discount ?? 0) > 0,
+        );
+
+        if (filteredProducts.length === 0) {
+          throw new NotFoundException(
+            'No se encontraron productos con la promoción especificada',
+          );
+        }
+
+        return filteredProducts;
+      }
+
+      if (filter.promotionType) {
+        const promotions: Promotion[] = await this.promotionsService.findByType(
+          filter.promotionType as PromotionType,
+          true,
+        );
+
+        if (promotions.length === 0) {
+          throw new NotFoundException(
+            `No se encontraron promociones activas del tipo ${filter.promotionType}`,
+          );
+        }
+
+        // Filtrar productos que tengan al menos una promoción activa del tipo especificado
+        const filteredProducts: Array<{
+          [key: string]: any;
+          type: PromotionType | null;
+        }> = [];
+        productsWithPromotions.forEach((product) => {
+          const hasValidPromotion = promotions.some(
+            (promotion) =>
+              product.appliedPromotion &&
+              product.appliedPromotion === promotion._id.toString(),
+          );
+
+          if (hasValidPromotion || (product.discount ?? 0) > 0) {
+            // Buscar la promoción que coincide con appliedPromotion del producto
+            const matchedPromotion = promotions.find(
+              (promotion) =>
+                product.appliedPromotion &&
+                product.appliedPromotion === promotion._id.toString(),
+            );
+            // Asignar el valor de type de la promoción, o null si no hay promoción
+            const promotionType = matchedPromotion
+              ? matchedPromotion.type
+              : null;
+
+            filteredProducts.push({
+              ...product,
+              type: promotionType, // Añadimos la propiedad type con el valor de promotion.type
+            });
+          }
+        });
+
+        if (filteredProducts.length === 0) {
+          throw new NotFoundException(
+            `No se encontraron productos con promociones del tipo ${filter.promotionType}`,
+          );
+        }
+        return filteredProducts;
+      }
 
       return productsWithPromotions;
     } catch (error) {

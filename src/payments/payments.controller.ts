@@ -19,7 +19,6 @@ import { User } from '../auth/schemas/users.schema';
 import { CartService } from '../cart/cart.service';
 import { ProductsService } from '../products/products.service';
 import { OrdersService } from '../orders/orders.service';
-import { NotificationsService } from '../notifications/notifications.service';
 import {
   ApiTags,
   ApiOperation,
@@ -42,7 +41,6 @@ export class PaymentsController {
     private readonly cartService: CartService,
     private readonly productsService: ProductsService,
     private readonly ordersService: OrdersService,
-    private readonly notificationsService: NotificationsService,
     @InjectModel(User.name) private userModel: Model<User>,
   ) {}
 

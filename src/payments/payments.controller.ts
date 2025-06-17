@@ -306,9 +306,14 @@ export class PaymentsController {
       console.log('success - orderId creado:', order.order._id);
       this.validateId(order.order._id, 'orderId');
 
-      await this.cartService.clearCart(user._id, productIds);
+      //await this.cartService.clearCart(user._id, productIds);
 
-      return res.redirect(`${process.env.FRONTEND_URL}/orders`);
+      return {
+        message: 'Pago procesado exitosamente',
+        order: order,
+        user: user,
+      }
+      //return res.redirect(`${process.env.FRONTEND_URL}/orders`);
     } catch (error: unknown) {
       if (
         error instanceof BadRequestException ||

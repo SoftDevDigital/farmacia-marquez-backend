@@ -329,6 +329,8 @@ export class PaymentsController {
         })),
       }; */
 
+      console.log('orderDetails: ', order);
+      console.log('user: ', user);
       return {
         message: 'Pago procesado exitosamente',
         orderDetails: order,

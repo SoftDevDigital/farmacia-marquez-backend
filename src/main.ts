@@ -23,7 +23,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document); // Documentación disponible en /api
   app.enableCors({
-    origin: 'http://localhost:3003',
+    origin: process.env.FRONTEND_URL,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     preflightContinue: false,
     optionsSuccessStatus: 204,

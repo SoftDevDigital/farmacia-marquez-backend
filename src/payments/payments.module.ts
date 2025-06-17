@@ -5,7 +5,6 @@ import { CartModule } from '../cart/cart.module';
 import { ProductsModule } from '../products/products.module';
 import { OrdersModule } from '../orders/orders.module';
 import { AuthModule } from '../auth/auth.module';
-import { NotificationsModule } from '../notifications/notifications.module';
 
 @Module({
   imports: [
@@ -13,7 +12,6 @@ import { NotificationsModule } from '../notifications/notifications.module';
     ProductsModule,
     OrdersModule,
     AuthModule, // Importar AuthModule para proporcionar UserModel
-    NotificationsModule,
   ],
   controllers: [PaymentsController],
   providers: [MercadoPagoService],

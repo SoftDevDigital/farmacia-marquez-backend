@@ -308,33 +308,9 @@ export class PaymentsController {
       console.log('success - orderId creado:', order.order._id);
       this.validateId(order.order._id, 'orderId');
 
-      //await this.cartService.clearCart(user._id, productIds);
+      await this.cartService.clearCart(user._id, productIds);
 
-      // Enviar mail a los dueños de la farmacia diciendo que se compro ciertos productos, por cierto importe, con los datos de envio
-      // necesito, un objeto que tenga todo lo relacionado a la order, y el usuario a donde se enviara el pedido
-      // Creamos un objeto con la información necesaria
-      /*  const orderDetails = {
-        orderId: order.order._id,
-        userId: user._id,
-        userName: user.name,
-        userEmail: user.email,
-        userAddress: user.address,
-        userPhone: user.phone,
-        totalPrice: order.order.totalPrice,
-        items: order.order.items.map((item) => ({
-          productId: item.productId,
-          productName: item.productName,
-          quantity: item.quantity,
-          price: item.price,
-        })),
-      }; */
-
-      return {
-        message: 'Pago procesado exitosamente',
-        orderDetails: order,
-        user: user,
-      };
-      //return res.redirect(`${process.env.FRONTEND_URL}/orders`);
+      return res.redirect(`${process.env.FRONTEND_URL}/orders`);
     } catch (error: unknown) {
       if (
         error instanceof BadRequestException ||

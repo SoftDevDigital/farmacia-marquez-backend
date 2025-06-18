@@ -70,12 +70,12 @@ export class NotificationsService {
         mailOptions,
       )) as nodemailer.SentMessageInfo;
       console.log(
-        `Correo enviado exitosamente a ${email}. Message ID: ${info.messageId}`,
+        `Correo enviado exitosamente a TEST.`,
       );
     } catch (error: unknown) {
       const err = error as Error;
       console.error(
-        `Error al enviar correo de recuperación a ${email}:`,
+        `Error al enviar correo de recuperación a TEST:`,
         err.message,
         err.stack,
       );

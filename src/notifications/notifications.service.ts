@@ -57,11 +57,116 @@ export class NotificationsService {
     const mailOptions = {
       from: 'marquezcityfarmacias@gmail.com',
       to: 'alexis.correa026@gmail.com',
-      subject: 'Recuperación de Contraseña',
+      subject: 'Confirmación de Orden',
       html: `
-        <p>Order: ${order}</p>
-        <p>--------------------------------</p>
-        <p>User: ${user}</p>
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Confirmación de Orden</title>
+          <style>
+            body {
+              margin: 0;
+              padding: 0;
+              font-family: Arial, Helvetica, sans-serif;
+              background-color: #f4f4f4;
+              color: #333333;
+            }
+            .container {
+              max-width: 600px;
+              margin: 20px auto;
+              background-color: #ffffff;
+              border-radius: 8px;
+              box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+              overflow: hidden;
+            }
+            .header {
+              background-color: #007bff;
+              color: #ffffff;
+              padding: 20px;
+              text-align: center;
+            }
+            .header h1 {
+              margin: 0;
+              font-size: 24px;
+            }
+            .content {
+              padding: 30px;
+            }
+            h3 {
+              color: #007bff;
+              font-size: 18px;
+              margin-bottom: 15px;
+              border-bottom: 1px solid #e0e0e0;
+              padding-bottom: 10px;
+            }
+            p {
+              margin: 10px 0;
+              line-height: 1.6;
+              font-size: 14px;
+            }
+            .info-section {
+              margin-bottom: 20px;
+            }
+            .footer {
+              background-color: #f8f9fa;
+              padding: 20px;
+              text-align: center;
+              font-size: 12px;
+              color: #666666;
+            }
+            .divider {
+              border-top: 1px solid #e0e0e0;
+              margin: 20px 0;
+            }
+            @media screen and (max-width: 600px) {
+              .container {
+                margin: 10px;
+              }
+              .content {
+                padding: 20px;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Confirmación de Orden</h1>
+            </div>
+            <div class="content">
+              <div class="info-section">
+                <h3>Datos de la Orden</h3>
+                <p><strong>Número de Orden:</strong> ${order.order}</p>
+                <p><strong>Referencia:</strong> ${order.Order}</p>
+              </div>
+              <div class="divider"></div>
+              <div class="info-section">
+                <h3>Datos del Envío</h3>
+                <p><strong>Comprador/a:</strong> ${user.shippingInfo.recipientName}</p>
+                <p><strong>Número de Documento:</strong> ${user.shippingInfo.documentNumber}</p>
+                <p><strong>Ciudad:</strong> ${user.shippingInfo.city}</p>
+                <p><strong>Calle:</strong> ${user.shippingInfo.street}</p>
+                <p><strong>Número:</strong> ${user.shippingInfo.streetNumber}</p>
+                <p><strong>Apartamento:</strong> ${user.shippingInfo.apartment ? user.shippingInfo.apartment : '-'}</p>
+                <p><strong>Código Postal:</strong> ${user.shippingInfo.postalCode}</p>
+              </div>
+              <div class="divider"></div>
+              <div class="info-section">
+                <h3>Contactos</h3>
+                <p><strong>Teléfono:</strong> ${user.shippingInfo.phoneNumber}</p>
+                <p><strong>Email:</strong> ${user.shippingInfo.email}</p>
+                <p><strong>Notas Adicionales:</strong> ${user.shippingInfo.additionalNotes}</p>
+              </div>
+            </div>
+            <div class="footer">
+              <p>Gracias por su compra en Marquez City Farmacias</p>
+              <p>Si tiene alguna pregunta, contáctenos en marquezcityfarmacias@gmail.com</p>
+            </div>
+          </div>
+        </body>
+        </html>
       `,
     };
 
@@ -69,9 +174,7 @@ export class NotificationsService {
       const info = (await this.transporter.sendMail(
         mailOptions,
       )) as nodemailer.SentMessageInfo;
-      console.log(
-        `Correo enviado exitosamente a TEST.`,
-      );
+      console.log(`Correo enviado exitosamente a TEST.`);
     } catch (error: unknown) {
       const err = error as Error;
       console.error(

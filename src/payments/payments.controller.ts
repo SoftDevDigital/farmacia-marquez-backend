@@ -19,6 +19,7 @@ import { User } from '../auth/schemas/users.schema';
 import { CartService } from '../cart/cart.service';
 import { ProductsService } from '../products/products.service';
 import { OrdersService } from '../orders/orders.service';
+import { NotificationsService } from '../notifications/notifications.service';
 import {
   ApiTags,
   ApiOperation,
@@ -41,6 +42,7 @@ export class PaymentsController {
     private readonly cartService: CartService,
     private readonly productsService: ProductsService,
     private readonly ordersService: OrdersService,
+    private readonly notificationsService: NotificationsService,
     @InjectModel(User.name) private userModel: Model<User>,
   ) {}
 
@@ -308,12 +310,10 @@ export class PaymentsController {
 
       //await this.cartService.clearCart(user._id, productIds);
 
-      return {
-        message: 'Pago procesado exitosamente',
-        order: order,
-        user: user,
-      }
-      //return res.redirect(`${process.env.FRONTEND_URL}/orders`);
+      // Envio de mail
+      await this.notificationsService.sendOrderConfirmationEmail(user, order);
+
+      return res.redirect(`${process.env.FRONTEND_URL}/orders`);
     } catch (error: unknown) {
       if (
         error instanceof BadRequestException ||

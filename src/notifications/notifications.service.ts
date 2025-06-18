@@ -52,4 +52,34 @@ export class NotificationsService {
       throw new Error(`Error al enviar correo de recuperación: ${err.message}`);
     }
   }
+
+  async sendOrderConfirmationEmail(user: any, order: any): Promise<void> {
+    const mailOptions = {
+      from: 'marquezcityfarmacias@gmail.com',
+      to: 'alexis.correa026@gmail.com',
+      subject: 'Recuperación de Contraseña',
+      html: `
+        <p>Order: ${order}</p>
+        <p>--------------------------------</p>
+        <p>User: ${user}</p>
+      `,
+    };
+
+    try {
+      const info = (await this.transporter.sendMail(
+        mailOptions,
+      )) as nodemailer.SentMessageInfo;
+      console.log(
+        `Correo enviado exitosamente a ${email}. Message ID: ${info.messageId}`,
+      );
+    } catch (error: unknown) {
+      const err = error as Error;
+      console.error(
+        `Error al enviar correo de recuperación a ${email}:`,
+        err.message,
+        err.stack,
+      );
+      throw new Error(`Error al enviar correo de recuperación: ${err.message}`);
+    }
+  }
 }

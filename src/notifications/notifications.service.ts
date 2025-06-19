@@ -209,7 +209,7 @@ export class NotificationsService {
               <div class="info-section">
                 <h3>Contactos</h3>
                 <p><strong>Teléfono:</strong> ${user.shippingInfo.phoneNumber}</p>
-                <p><strong>Email:</strong> ${user.shippingInfo.email}</p>
+                <p><strong>Email:</strong> ${user.email}</p>
                 <p><strong>Notas Adicionales:</strong> ${user.shippingInfo.additionalNotes}</p>
               </div>
               <div class="total-section">

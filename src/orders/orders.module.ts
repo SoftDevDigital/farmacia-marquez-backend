@@ -6,6 +6,7 @@ import { Order, OrderSchema } from './schemas/orders.schema';
 import { ProductsModule } from '../products/products.module';
 import { CartModule } from '../cart/cart.module';
 import { UsersModule } from '../users/users.module'; // Añadido
+import { PromotionsModule } from '../promotions/promotions.module'; // Añadido para promociones
 
 @Module({
   imports: [
@@ -13,6 +14,7 @@ import { UsersModule } from '../users/users.module'; // Añadido
     ProductsModule,
     CartModule, // Para inyectar CartService
     UsersModule, // Para inyectar UsersService
+    PromotionsModule,
   ],
   controllers: [OrdersController],
   providers: [OrdersService],

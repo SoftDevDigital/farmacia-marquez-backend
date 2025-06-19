@@ -10,6 +10,7 @@ import { Order } from './schemas/orders.schema';
 import { CartService } from '../cart/cart.service';
 import { CreateOrderDto } from './dtos/create-order.dto';
 import { UsersService } from '../users/users.service';
+import { PromotionsService } from '../promotions/promotions.service';
 import { User } from '../auth/schemas/users.schema';
 import { Product } from '../products/schemas/products.schema';
 
@@ -20,6 +21,7 @@ export class OrdersService {
     @InjectModel(Product.name) private productModel: Model<Product>,
     private cartService: CartService,
     private usersService: UsersService,
+    private promotionsService: PromotionsService,
   ) {}
 
   private validateId(id: string, fieldName: string = 'ID'): void {
@@ -164,24 +166,55 @@ export class OrdersService {
 
   async createFromCart(
     userId: string,
-    selectedProductIds?: string[], // Añadido parámetro opcional
+    selectedProductIds?: string[],
   ): Promise<{ order: Order; removedItems?: string[] }> {
-    console.log('createFromCart - userId recibido:', userId);
+    console.log('Iniciando createFromCart', { userId, selectedProductIds });
+
     this.validateId(userId, 'userId');
+    console.log('userId validado correctamente:', userId);
+
+    // Validar selectedProductIds como UUIDs
+    if (selectedProductIds) {
+      for (const productId of selectedProductIds) {
+        this.validateId(productId, 'productId');
+      }
+    }
 
     try {
+      console.log('Buscando carrito para userId:', userId);
       const cart = await this.cartService.findOne(userId);
 
       if (!cart.items || cart.items.length === 0) {
         throw new NotFoundException('El carrito está vacío');
       }
-
       const user = await this.usersService.findOne(userId);
       if (!user) {
         throw new NotFoundException('Usuario no encontrado');
       }
 
-      // Filtrar ítems según selectedProductIds, o usar todos si no se proporciona
+      const requiredShippingFields = [
+        'recipientName',
+        'phoneNumber',
+        'documentNumber',
+        'street',
+        'streetNumber',
+        'city',
+        'state',
+        'postalCode',
+        'country',
+      ];
+      const missingFields = requiredShippingFields.filter(
+        (field) =>
+          !user.shippingInfo[field] || user.shippingInfo[field].trim() === '',
+      );
+      if (missingFields.length > 0) {
+        console.log('Falta información de envío:', missingFields);
+        throw new BadRequestException(
+          `Falta información de envío requerida: ${missingFields.join(', ')}`,
+        );
+      }
+
+      // Filtrar ítems según selectedProductIds
       const filteredItems =
         selectedProductIds && selectedProductIds.length > 0
           ? cart.items.filter((item) =>
@@ -193,7 +226,7 @@ export class OrdersService {
         throw new BadRequestException('Ningún producto seleccionado es válido');
       }
 
-      // Enriquecer los ítems con el nombre del producto
+      // Enriquecer ítems y aplicar descuentos
       const orderItems = await Promise.all(
         filteredItems.map(async (item) => {
           const product = await this.productModel
@@ -204,6 +237,11 @@ export class OrdersService {
               `Producto no encontrado: ${item.productId}`,
             );
           }
+
+          if (item.unitPrice !== product.price) {
+            item.unitPrice = product.price; // Actualizar al precio actual
+          }
+
           return {
             productId: item.productId,
             name: product.name,
@@ -213,35 +251,59 @@ export class OrdersService {
         }),
       );
 
-      // Calcular el total basado en los ítems filtrados
-      const total = orderItems.reduce(
+      // Calcular descuentos usando PromotionsService
+      const { itemsWithDiscount, totalDiscount } =
+        await this.promotionsService.calculateDiscountForCartItems(
+          orderItems.map((item) => ({
+            productId: item.productId,
+            quantity: item.quantity,
+            unitPrice: item.price,
+          })),
+        );
+      console.log('Descuentos calculados:', {
+        itemsWithDiscount,
+        totalDiscount,
+      });
+
+      // Preparar orderItems con descuentos aplicados
+      const finalOrderItems = itemsWithDiscount.map((item) => ({
+        productId: item.productId,
+        name:
+          orderItems.find((oi) => oi.productId === item.productId)?.name || '',
+        quantity: item.quantity,
+        price: item.discountedSubtotal
+          ? item.discountedSubtotal / item.quantity
+          : item.unitPrice,
+      }));
+
+      // Calcular el total final
+      const total = finalOrderItems.reduce(
         (sum, item) => sum + item.quantity * item.price,
         0,
       );
+      console.log('Total calculado:', { total });
 
       const order = new this.orderModel({
         userId,
-        items: orderItems,
+        items: finalOrderItems,
         total,
         status: 'pending',
-        shippingAddress: user.shippingInfo || {
-          recipientName: '',
-          phoneNumber: '',
-          documentNumber: '',
-          street: '',
-          streetNumber: '',
-          apartment: '',
-          city: '',
-          state: '',
-          postalCode: '',
-          country: '',
-          additionalNotes: '',
-        },
+        shippingAddress: user.shippingInfo,
       });
 
       await order.save();
+      console.log('Orden guardada en la base de datos:', {
+        orderId: order._id,
+      });
+
       return { order };
     } catch (error: unknown) {
+      console.error('Error en createFromCart:', {
+        errorName: (error as Error).name,
+        errorMessage: (error as Error).message,
+        stack: (error as Error).stack,
+      });
+
       if (
         error instanceof NotFoundException ||
         error instanceof BadRequestException
@@ -249,6 +311,7 @@ export class OrdersService {
         throw error;
       }
       if ((error as Error).name === 'CastError') {
+        console.log('CastError detectado, userId no válido:', userId);
         throw new BadRequestException(
           'El userId no tiene un formato válido (debe ser un UUID)',
         );

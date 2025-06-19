@@ -180,7 +180,7 @@ export class NotificationsService {
                     </tr>
                   </thead>
                   <tbody>
-                    ${order.items
+                    ${order.order.items
                       .map(
                         (item: any) => `
                       <tr>
@@ -213,7 +213,7 @@ export class NotificationsService {
                 <p><strong>Notas Adicionales:</strong> ${user.shippingInfo.additionalNotes}</p>
               </div>
               <div class="total-section">
-                Total: $${order.total.toFixed(2)}
+                Total: $${order.order.total.toFixed(2)}
               </div>
             </div>
             <div class="footer">

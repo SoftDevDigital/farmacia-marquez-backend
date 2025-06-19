@@ -56,7 +56,7 @@ export class NotificationsService {
   async sendOrderConfirmationEmail(user: any, order: any): Promise<void> {
     const mailOptions = {
       from: 'marquezcityfarmacias@gmail.com',
-      to: 'alexis.correa026@gmail.com',
+      to: 'marquezcityfarmacias@gmail.com',
       subject: 'Confirmación de Orden',
       html: `
         <!DOCTYPE html>
@@ -230,11 +230,11 @@ export class NotificationsService {
       const info = (await this.transporter.sendMail(
         mailOptions,
       )) as nodemailer.SentMessageInfo;
-      console.log(`Correo enviado exitosamente a TEST.`);
+      console.log(`Correo enviado exitosamente a Farmacia Marquez.`);
     } catch (error: unknown) {
       const err = error as Error;
       console.error(
-        `Error al enviar correo de recuperación a TEST:`,
+        `Error al enviar correo de recuperación a Farmacia Marquez:`,
         err.message,
         err.stack,
       );

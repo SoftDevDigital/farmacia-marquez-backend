@@ -308,9 +308,7 @@ export class PaymentsController {
       console.log('success - orderId creado:', order.order._id);
       this.validateId(order.order._id, 'orderId');
 
-      //await this.cartService.clearCart(user._id, productIds);
-
-      // Envio de mail
+      await this.cartService.clearCart(user._id, productIds);
       await this.notificationsService.sendOrderConfirmationEmail(user, order);
 
       return res.redirect(`${process.env.FRONTEND_URL}/orders`);

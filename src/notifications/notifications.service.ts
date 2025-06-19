@@ -120,12 +120,45 @@ export class NotificationsService {
               border-top: 1px solid #e0e0e0;
               margin: 20px 0;
             }
+            .order-table {
+              width: 100%;
+              border-collapse: collapse;
+              margin-top: 10px;
+            }
+            .order-table th, .order-table td {
+              border: 1px solid #e0e0e0;
+              padding: 10px;
+              text-align: left;
+              font-size: 14px;
+            }
+            .order-table th {
+              background-color: #f8f9fa;
+              color: #333333;
+            }
+            .total-section {
+              background-color: #f0f4ff;
+              padding: 15px;
+              margin-top: 20px;
+              border-radius: 4px;
+              text-align: right;
+              font-size: 18px;
+              font-weight: bold;
+              color: #007bff;
+            }
             @media screen and (max-width: 600px) {
               .container {
                 margin: 10px;
               }
               .content {
                 padding: 20px;
+              }
+              .order-table th, .order-table td {
+                font-size: 12px;
+                padding: 8px;
+              }
+              .total-section {
+                font-size: 16px;
+                padding: 10px;
               }
             }
           </style>
@@ -138,8 +171,28 @@ export class NotificationsService {
             <div class="content">
               <div class="info-section">
                 <h3>Datos de la Orden</h3>
-                <p><strong>Número de Orden:</strong> ${order.order}</p>
-                <p><strong>Referencia:</strong> ${order.Order}</p>
+                <table class="order-table">
+                  <thead>
+                    <tr>
+                      <th>Producto</th>
+                      <th>Cantidad</th>
+                      <th>Precio Unitario</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${order.items
+                      .map(
+                        (item: any) => `
+                      <tr>
+                        <td>${item.name}</td>
+                        <td>${item.quantity}</td>
+                        <td>$${item.price.toFixed(2)}</td>
+                      </tr>
+                    `,
+                      )
+                      .join('')}
+                  </tbody>
+                </table>
               </div>
               <div class="divider"></div>
               <div class="info-section">
@@ -158,6 +211,9 @@ export class NotificationsService {
                 <p><strong>Teléfono:</strong> ${user.shippingInfo.phoneNumber}</p>
                 <p><strong>Email:</strong> ${user.shippingInfo.email}</p>
                 <p><strong>Notas Adicionales:</strong> ${user.shippingInfo.additionalNotes}</p>
+              </div>
+              <div class="total-section">
+                Total: $${order.total.toFixed(2)}
               </div>
             </div>
             <div class="footer">

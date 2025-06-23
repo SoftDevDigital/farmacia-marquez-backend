@@ -714,4 +714,25 @@ export class PromotionsService {
       );
     }
   }
+
+  async autoDeleteInactivePromotions(): Promise<boolean> {
+    try {
+      const date = new Date();
+      date.setDate(date.getDate() - 1);
+      const endDate = date.toISOString().slice(0, 10) + 'T23:59:59.000+0000';
+
+      const result = await this.promotionModel
+        .deleteMany({
+          isActive: true,
+          endDate: { $lte: endDate },
+        })
+        .exec();
+
+      return result.deletedCount > 0;
+    } catch (error) {
+      throw new InternalServerErrorException(
+        'Error al eliminar promociones inactivas',
+      );
+    }
+  }
 }

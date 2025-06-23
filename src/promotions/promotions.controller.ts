@@ -10,6 +10,7 @@ import {
   UseGuards,
   BadRequestException,
 } from '@nestjs/common';
+import { RestrictIpGuard } from './guards/restrict-ip.guard';
 import { PromotionsService } from './promotions.service';
 import { CreatePromotionDto } from './dtos/create-promotion.dto';
 import { UpdatePromotionDto } from './dtos/update-promotion.dto';
@@ -259,5 +260,23 @@ export class PromotionsController {
       quantity,
       productPrice,
     );
+  }
+
+  // Auto eliminacion de promociones inactivas
+  @Post('auto-delete-inactive')
+  @UseGuards(RestrictIpGuard)
+  @ApiOperation({
+    summary: 'Auto eliminar promociones inactivas (restringido a localhost)',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Promociones inactivas eliminadas exitosamente',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Acceso denegado: IP no autorizada',
+  })
+  async autoDeleteInactive() {
+    return this.promotionsService.autoDeleteInactivePromotions();
   }
 }
